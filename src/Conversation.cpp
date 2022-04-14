@@ -1,5 +1,6 @@
 #include <sstream>
 #include <iostream>
+#include <cmath>
 #include "Conversation.h"
 
 namespace FeatureExtractor {
@@ -90,36 +91,48 @@ namespace FeatureExtractor {
 	};
 
 	Conversation::Conversation()
-		: five_tuple(), state(INIT)
-		, start_ts(), last_ts()
-		, src_bytes(0), dst_bytes(0)
-		, packets(0), src_packets(0), dst_packets(0)
-		, wrong_fragments(0), urgent_packets(0)
+		: five_tuple(), start_ts(), last_ts()
 	{
+        init_values();
 	}
 
 	Conversation::Conversation(const FiveTuple *tuple)
-		: five_tuple(*tuple), state(INIT)
-		, start_ts(), last_ts()
-		, src_bytes(0), dst_bytes(0)
-		, packets(0), src_packets(0), dst_packets(0)
-		, wrong_fragments(0), urgent_packets(0)
+		: five_tuple(*tuple), start_ts(), last_ts()
 	{
+        init_values();
 	}
 
 	Conversation::Conversation(const Packet *packet)
-		: five_tuple(packet->get_five_tuple()), state(INIT)
-		, start_ts(), last_ts()
-		, src_bytes(0), dst_bytes(0)
-		, packets(0), src_packets(0), dst_packets(0)
-		, wrong_fragments(0), urgent_packets(0)
+		: five_tuple(packet->get_five_tuple()), start_ts(), last_ts()
 	{
+        init_values();
 	}
 
 
 	Conversation::~Conversation()
 	{
 	}
+
+    void Conversation::init_values()
+    {
+        state = INIT;
+
+        src_bytes_sum = 0;
+        src_bytes_max = 0;
+        src_bytes_min = 0;
+        src_bytes_squ = 0;
+
+        dst_bytes_sum = 0;
+        dst_bytes_max = 0;
+        dst_bytes_min = 0;
+        dst_bytes_squ = 0;
+
+        packets = 0;
+        src_packets = 0;
+        dst_packets = 0;
+        wrong_fragments = 0;
+        urgent_packets = 0;
+    }
 
 
 	FiveTuple Conversation::get_five_tuple() const
@@ -186,15 +199,52 @@ namespace FeatureExtractor {
 		return (last_ts - start_ts).get_total_msecs();
 	}
 
-	size_t Conversation::get_src_bytes() const
+    double calculate_standard_deviation(size_t n, double sum, double squ_sum)
+    {
+        return sqrt(squ_sum / n - (sum / n) * (sum / n));
+    }
+
+	size_t Conversation::get_src_bytes_sum() const
 	{
-		return src_bytes;
+		return src_bytes_sum;
 	}
 
-	size_t Conversation::get_dst_bytes() const
+    size_t Conversation::get_src_bytes_max() const
+    {
+        return src_bytes_max;
+    }
+
+    size_t Conversation::get_src_bytes_min() const
+    {
+        return src_bytes_min;
+    }
+
+    double Conversation::get_src_bytes_std() const
+    {
+        if (src_packets == 0) return 0.0;
+        return calculate_standard_deviation(src_packets, src_bytes_sum * 1.0, src_bytes_squ * 1.0);
+    }
+
+	size_t Conversation::get_dst_bytes_sum() const
 	{
-		return dst_bytes;
+		return dst_bytes_sum;
 	}
+
+    size_t Conversation::get_dst_bytes_max() const
+    {
+        return dst_bytes_max;
+    }
+
+    size_t Conversation::get_dst_bytes_min() const
+    {
+        return dst_bytes_min;
+    }
+
+    double Conversation::get_dst_bytes_std() const
+    {
+        if (dst_packets == 0) return 0.0;
+        return calculate_standard_deviation(dst_packets, dst_bytes_sum * 1.0, dst_bytes_squ * 1.0);
+    }
 
 	uint32_t Conversation::get_packets() const
 	{
@@ -285,12 +335,19 @@ namespace FeatureExtractor {
 		last_ts = packet->get_end_ts();
 
 		// Add byte counts for correct direction
+        size_t packet_length = packet->get_length();
 		if (packet->get_src_ip() == five_tuple.get_src_ip()) {
-			src_bytes += packet->get_length();
+            src_bytes_sum += packet_length;
+            src_bytes_max = max(src_bytes_max, packet_length);
+            src_bytes_min = min(src_bytes_min, packet_length);
+            src_bytes_squ += packet_length * packet_length;
 			src_packets++;
 		}
 		else {
-			dst_bytes += packet->get_length();
+            dst_bytes_sum += packet->get_length();
+            dst_bytes_max = max(dst_bytes_max, packet_length);
+            dst_bytes_min = min(dst_bytes_min, packet_length);
+            dst_bytes_squ += packet_length * packet_length;
 			dst_packets++;
 		}
 
@@ -394,7 +451,7 @@ namespace FeatureExtractor {
 
 		ss << "  " << (int)sip[0] << "." << (int)sip[1] << "." << (int)sip[2] << "." << (int)sip[3] << ":" << five_tuple.get_src_port();
 		ss << " --> " << (int)dip[0] << "." << (int)dip[1] << "." << (int)dip[2] << "." << (int)dip[3] << ":" << five_tuple.get_dst_port() << endl;
-		ss << "  src_bytes=" << src_bytes << " dst_bytes=" << dst_bytes << " land=" << land() << endl;
+		ss << "  src_bytes_sum=" << src_bytes_sum << " dst_bytes_sum=" << dst_bytes_sum << " land=" << land() << endl;
 		ss << "  pkts=" << packets << " src_pkts=" << src_packets << " dst_pkts=" << dst_packets << endl;
 		ss << "  wrong_frags=" << wrong_fragments << " urg_pkts=" << urgent_packets << endl;
 		ss << "  state=" << get_state_str() << " internal_state=" << state_to_str(state) << endl;

@@ -30,10 +30,10 @@ namespace FeatureExtractor {
 		RSTOS0,		// Originator sent a SYN followed by a RST, we never saw a SYN-ACK from the responder.
 		RSTO,		// Connection established, originator aborted (sent a RST).
 		RSTR,		// Established, responder aborted.
-		SH,			// Originator sent a SYN followed by a FIN, we never saw a SYN ACK from the responder (hence the connection was “half” open).
+		SH,			// Originator sent a SYN followed by a FIN, we never saw a SYN ACK from the responder (hence the connection was ï¿½halfï¿½ open).
 		RSTRH,		// Responder sent a SYN ACK followed by a RST, we never saw a SYN from the (purported) originator.
 		SHR,		// Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator.
-		OTH,		// No SYN seen, just midstream traffic (a “partial connection” that was not later closed).
+		OTH,		// No SYN seen, just midstream traffic (a "partial connection" that was not later closed).
 
 		// Internal states (TCP-specific)
 		ESTAB,		// Established - ACK send by originator in S1 state; externally represented as S1
@@ -153,8 +153,14 @@ namespace FeatureExtractor {
 		Timestamp start_ts;
 		Timestamp last_ts;
 
-		size_t src_bytes;
-		size_t dst_bytes;
+		size_t src_bytes_sum;
+        size_t src_bytes_max;
+        size_t src_bytes_min;
+        size_t src_bytes_squ;
+		size_t dst_bytes_sum;
+        size_t dst_bytes_max;
+        size_t dst_bytes_min;
+        size_t dst_bytes_squ;
 		uint32_t packets;
 		uint32_t src_packets;
 		uint32_t dst_packets;
@@ -169,6 +175,8 @@ namespace FeatureExtractor {
 		Conversation(const FiveTuple *tuple);
 		Conversation(const Packet *packet);
 		virtual ~Conversation();
+
+        void init_values();
 
 		/**
 		 * Returns five tuple identifying the connection 
@@ -189,8 +197,14 @@ namespace FeatureExtractor {
 		Timestamp get_start_ts() const;
 		Timestamp get_last_ts() const;
 		uint64_t get_duration_ms() const;
-		size_t get_src_bytes() const;
-		size_t get_dst_bytes() const;
+		size_t get_src_bytes_sum() const;
+		size_t get_src_bytes_max() const;
+        size_t get_src_bytes_min() const;
+		double get_src_bytes_std() const;
+		size_t get_dst_bytes_sum() const;
+        size_t get_dst_bytes_max() const;
+        size_t get_dst_bytes_min() const;
+        double get_dst_bytes_std() const;
 		uint32_t get_packets() const;
 		uint32_t get_src_packets() const;
 		uint32_t get_dst_packets() const;

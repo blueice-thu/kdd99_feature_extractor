@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+
+.idea/
+.vscode/
+cmake-build-debug/

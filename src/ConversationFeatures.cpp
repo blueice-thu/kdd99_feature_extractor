@@ -181,8 +181,16 @@ namespace FeatureExtractor {
 		ss << conv->get_protocol_type_str() << ',';
 		ss << conv->get_service_str() << ',';
 		ss << conv->get_state_str() << ',';
-		ss << conv->get_src_bytes() << ',';
-		ss << conv->get_dst_bytes() << ',';
+        ss << conv->get_src_packets() << ',';
+		ss << conv->get_src_bytes_sum() << ',';
+		ss << conv->get_src_bytes_max() << ',';
+		ss << conv->get_src_bytes_min() << ',';
+		ss << conv->get_src_bytes_std() << ',';
+        ss << conv->get_dst_packets() << ',';
+		ss << conv->get_dst_bytes_sum() << ',';
+        ss << conv->get_dst_bytes_max() << ',';
+        ss << conv->get_dst_bytes_min() << ',';
+        ss << conv->get_dst_bytes_std() << ',';
 		ss << conv->land() << ',';
 		ss << conv->get_wrong_fragments() << ',';
 		ss << conv->get_urgent_packets() << ',';

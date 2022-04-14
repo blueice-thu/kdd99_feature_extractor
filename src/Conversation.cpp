@@ -152,6 +152,24 @@ namespace FeatureExtractor {
         rst_packets = 0;
         syn_packets = 0;
         fin_packets = 0;
+
+        src_cwr_packets = 0;
+        src_ece_packets = 0;
+        src_urg_packets = 0;
+        src_ack_packets = 0;
+        src_psh_packets = 0;
+        src_rst_packets = 0;
+        src_syn_packets = 0;
+        src_fin_packets = 0;
+
+        dst_cwr_packets = 0;
+        dst_ece_packets = 0;
+        dst_urg_packets = 0;
+        dst_ack_packets = 0;
+        dst_psh_packets = 0;
+        dst_rst_packets = 0;
+        dst_syn_packets = 0;
+        dst_fin_packets = 0;
     }
 
 
@@ -551,6 +569,15 @@ namespace FeatureExtractor {
             src_bytes_min = min(src_bytes_min, packet_length);
             src_bytes_squ += packet_length * packet_length;
             src_packets++;
+
+            if (packet->get_tcp_flags().cwr()) src_cwr_packets++;
+            if (packet->get_tcp_flags().ece()) src_ece_packets++;
+            if (packet->get_tcp_flags().urg()) src_urg_packets++;
+            if (packet->get_tcp_flags().ack()) src_ack_packets++;
+            if (packet->get_tcp_flags().psh()) src_psh_packets++;
+            if (packet->get_tcp_flags().rst()) src_rst_packets++;
+            if (packet->get_tcp_flags().syn()) src_syn_packets++;
+            if (packet->get_tcp_flags().fin()) src_fin_packets++;
         } else {
             if (dst_packets == 0) {
                 dst_start_ts = packet->get_start_ts();
@@ -573,6 +600,15 @@ namespace FeatureExtractor {
             dst_bytes_min = min(dst_bytes_min, packet_length);
             dst_bytes_squ += packet_length * packet_length;
             dst_packets++;
+
+            if (packet->get_tcp_flags().cwr()) dst_cwr_packets++;
+            if (packet->get_tcp_flags().ece()) dst_ece_packets++;
+            if (packet->get_tcp_flags().urg()) dst_urg_packets++;
+            if (packet->get_tcp_flags().ack()) dst_ack_packets++;
+            if (packet->get_tcp_flags().psh()) dst_psh_packets++;
+            if (packet->get_tcp_flags().rst()) dst_rst_packets++;
+            if (packet->get_tcp_flags().syn()) dst_syn_packets++;
+            if (packet->get_tcp_flags().fin()) dst_fin_packets++;
         }
 
         // Packet counts
@@ -703,5 +739,69 @@ namespace FeatureExtractor {
         ss << endl;
 
         cout << ss.str();
+    }
+
+    uint32_t Conversation::get_src_cwr_packets() const {
+        return src_cwr_packets;
+    }
+
+    uint32_t Conversation::get_src_ece_packets() const {
+        return src_ece_packets;
+    }
+
+    uint32_t Conversation::get_src_urg_packets() const {
+        return src_urg_packets;
+    }
+
+    uint32_t Conversation::get_src_ack_packets() const {
+        return src_ack_packets;
+    }
+
+    uint32_t Conversation::get_src_psh_packets() const {
+        return src_psh_packets;
+    }
+
+    uint32_t Conversation::get_src_rst_packets() const {
+        return src_rst_packets;
+    }
+
+    uint32_t Conversation::get_src_syn_packets() const {
+        return src_syn_packets;
+    }
+
+    uint32_t Conversation::get_src_fin_packets() const {
+        return src_fin_packets;
+    }
+
+    uint32_t Conversation::get_dst_cwr_packets() const {
+        return dst_cwr_packets;
+    }
+
+    uint32_t Conversation::get_dst_ece_packets() const {
+        return dst_ece_packets;
+    }
+
+    uint32_t Conversation::get_dst_urg_packets() const {
+        return dst_urg_packets;
+    }
+
+    uint32_t Conversation::get_dst_ack_packets() const {
+        return dst_ack_packets;
+    }
+
+    uint32_t Conversation::get_dst_psh_packets() const {
+        return dst_psh_packets;
+    }
+
+    uint32_t Conversation::get_dst_rst_packets() const {
+        return dst_rst_packets;
+    }
+
+    uint32_t Conversation::get_dst_syn_packets() const {
+        return dst_syn_packets;
+    }
+
+    uint32_t Conversation::get_dst_fin_packets() const {
+        return dst_fin_packets;
     }
 }

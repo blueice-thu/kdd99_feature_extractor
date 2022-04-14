@@ -191,6 +191,24 @@ namespace FeatureExtractor {
         uint32_t syn_packets;
         uint32_t fin_packets;
 
+        uint32_t src_cwr_packets;
+        uint32_t src_ece_packets;
+        uint32_t src_urg_packets;
+        uint32_t src_ack_packets;
+        uint32_t src_psh_packets;
+        uint32_t src_rst_packets;
+        uint32_t src_syn_packets;
+        uint32_t src_fin_packets;
+
+        uint32_t dst_cwr_packets;
+        uint32_t dst_ece_packets;
+        uint32_t dst_urg_packets;
+        uint32_t dst_ack_packets;
+        uint32_t dst_psh_packets;
+        uint32_t dst_rst_packets;
+        uint32_t dst_syn_packets;
+        uint32_t dst_fin_packets;
+
         virtual void update_state(const Packet *packet);
 
         static const char *state_to_str(conversation_state_t state);
@@ -325,6 +343,24 @@ namespace FeatureExtractor {
         uint32_t get_rst_packets() const;
         uint32_t get_syn_packets() const;
         uint32_t get_fin_packets() const;
+
+        uint32_t get_src_cwr_packets() const;
+        uint32_t get_src_ece_packets() const;
+        uint32_t get_src_urg_packets() const;
+        uint32_t get_src_ack_packets() const;
+        uint32_t get_src_psh_packets() const;
+        uint32_t get_src_rst_packets() const;
+        uint32_t get_src_syn_packets() const;
+        uint32_t get_src_fin_packets() const;
+
+        uint32_t get_dst_cwr_packets() const;
+        uint32_t get_dst_ece_packets() const;
+        uint32_t get_dst_urg_packets() const;
+        uint32_t get_dst_ack_packets() const;
+        uint32_t get_dst_psh_packets() const;
+        uint32_t get_dst_rst_packets() const;
+        uint32_t get_dst_syn_packets() const;
+        uint32_t get_dst_fin_packets() const;
 
         virtual service_t get_service() const = 0;    // Pure virtual function
         const char *get_service_str() const;

@@ -247,6 +247,7 @@ namespace FeatureExtractor {
 
         ss << conv->land() << ',';
         ss << conv->get_wrong_fragments() << ',';
+
         ss << conv->get_cwr_packets() << ',';
         ss << conv->get_ece_packets() << ',';
         ss << conv->get_urg_packets() << ',';
@@ -255,6 +256,24 @@ namespace FeatureExtractor {
         ss << conv->get_rst_packets() << ',';
         ss << conv->get_syn_packets() << ',';
         ss << conv->get_fin_packets() << ',';
+
+        ss << conv->get_src_cwr_packets() << ',';
+        ss << conv->get_src_ece_packets() << ',';
+        ss << conv->get_src_urg_packets() << ',';
+        ss << conv->get_src_ack_packets() << ',';
+        ss << conv->get_src_psh_packets() << ',';
+        ss << conv->get_src_rst_packets() << ',';
+        ss << conv->get_src_syn_packets() << ',';
+        ss << conv->get_src_fin_packets() << ',';
+
+        ss << conv->get_dst_cwr_packets() << ',';
+        ss << conv->get_dst_ece_packets() << ',';
+        ss << conv->get_dst_urg_packets() << ',';
+        ss << conv->get_dst_ack_packets() << ',';
+        ss << conv->get_dst_psh_packets() << ',';
+        ss << conv->get_dst_rst_packets() << ',';
+        ss << conv->get_dst_syn_packets() << ',';
+        ss << conv->get_dst_fin_packets() << ',';
 
         // Derived time windows features
         ss << count << ',';

@@ -5,74 +5,88 @@
 #include "FiveTuple.h"
 
 namespace FeatureExtractor {
-	/**
-	 * Abstract Packet
-	 */
-	class Packet
-	{
-		Timestamp start_ts;
-		bool eth2;
-		eth_field_type_t eth_type;
+    /**
+     * Abstract Packet
+     */
+    class Packet {
+        Timestamp start_ts;
+        bool eth2;
+        eth_field_type_t eth_type;
 
-		// <IP protocol, source IP, source port, destination IP, destination port>
-		FiveTuple five_tuple;
+        // <IP protocol, source IP, source port, destination IP, destination port>
+        FiveTuple five_tuple;
 
-		tcp_field_flags_t tcp_flags;
-		icmp_field_type_t icmp_type;
-		uint8_t icmp_code;
-		size_t length;
+        tcp_field_flags_t tcp_flags;
+        icmp_field_type_t icmp_type;
+        uint8_t icmp_code;
+        size_t length;
 
-	public:
-		Packet();
-		virtual ~Packet();
+    public:
+        Packet();
 
-		Timestamp get_start_ts() const;
-		void set_start_ts(const Timestamp &start_ts);
-		virtual Timestamp get_end_ts() const;
+        virtual ~Packet();
 
-		bool is_eth2() const;
-		void set_eth2(bool is_eth2);
+        Timestamp get_start_ts() const;
 
-		eth_field_type_t get_eth_type() const;
-		void set_eth_type(eth_field_type_t eth_type);
+        void set_start_ts(const Timestamp &start_ts);
 
-		ip_field_protocol_t get_ip_proto() const;
-		void set_ip_proto(ip_field_protocol_t ip_proto);
+        virtual Timestamp get_end_ts() const;
 
-		FiveTuple get_five_tuple() const;
-		void set_five_tuple(const FiveTuple &five_tuple);
+        bool is_eth2() const;
 
-		uint32_t get_src_ip() const;
-		void set_src_ip(uint32_t src_ip);
+        void set_eth2(bool is_eth2);
 
-		uint32_t get_dst_ip() const;
-		void set_dst_ip(uint32_t dst_ip);
+        eth_field_type_t get_eth_type() const;
 
-		uint16_t get_src_port() const;
-		void set_src_port(uint16_t src_port);
+        void set_eth_type(eth_field_type_t eth_type);
 
-		uint16_t get_dst_port() const;
-		void set_dst_port(uint16_t dst_port);
+        ip_field_protocol_t get_ip_proto() const;
 
-		tcp_field_flags_t get_tcp_flags() const;
-		void set_tcp_flags(tcp_field_flags_t tcp_flags);
+        void set_ip_proto(ip_field_protocol_t ip_proto);
 
-		icmp_field_type_t get_icmp_type() const;
-		void set_icmp_type(icmp_field_type_t icmp_type);
+        FiveTuple get_five_tuple() const;
 
-		uint8_t get_icmp_code() const;
-		void set_icmp_code(uint8_t icmp_code);
+        void set_five_tuple(const FiveTuple &five_tuple);
 
-		virtual size_t get_length() const;
-		virtual void set_length(size_t length);
+        uint32_t get_src_ip() const;
 
-		virtual uint16_t get_frame_count() const;
+        void set_src_ip(uint32_t src_ip);
 
-		/**
-		 * Output the class values (e.g. for debuging purposes)
-		 */
-		virtual void print_human() const;
+        uint32_t get_dst_ip() const;
 
-	};
+        void set_dst_ip(uint32_t dst_ip);
+
+        uint16_t get_src_port() const;
+
+        void set_src_port(uint16_t src_port);
+
+        uint16_t get_dst_port() const;
+
+        void set_dst_port(uint16_t dst_port);
+
+        tcp_field_flags_t get_tcp_flags() const;
+
+        void set_tcp_flags(tcp_field_flags_t tcp_flags);
+
+        icmp_field_type_t get_icmp_type() const;
+
+        void set_icmp_type(icmp_field_type_t icmp_type);
+
+        uint8_t get_icmp_code() const;
+
+        void set_icmp_code(uint8_t icmp_code);
+
+        virtual size_t get_length() const;
+
+        virtual void set_length(size_t length);
+
+        virtual uint16_t get_frame_count() const;
+
+        /**
+         * Output the class values (e.g. for debuging purposes)
+         */
+        virtual void print_human() const;
+
+    };
 
 }

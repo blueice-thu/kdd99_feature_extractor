@@ -275,6 +275,9 @@ namespace FeatureExtractor {
         ss << conv->get_dst_syn_packets() << ',';
         ss << conv->get_dst_fin_packets() << ',';
 
+        ss << conv->get_down_up_bytes_ratio() << ',';
+        ss << conv->get_down_up_packets_ratio() << ',';
+
         // Derived time windows features
         ss << count << ',';
         ss << srv_count << ',';

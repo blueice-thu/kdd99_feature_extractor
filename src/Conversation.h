@@ -248,90 +248,50 @@ namespace FeatureExtractor {
         Timestamp get_last_ts() const;
 
         uint32_t get_src_packets() const;
-
         size_t get_src_bytes_sum() const;
-
         double get_src_bytes_avg() const;
-
         size_t get_src_bytes_max() const;
-
         size_t get_src_bytes_min() const;
-
         double get_src_bytes_std() const;
-
         double get_src_bytes_rate() const;
-
         double get_src_packets_rate() const;
-
         uint64_t get_src_duration_ms() const;
-
         uint64_t get_src_gap_sum() const;
-
         double get_src_gap_avg() const;
-
         uint64_t get_src_gap_max() const;
-
         uint64_t get_src_gap_min() const;
-
         double get_src_gap_std() const;
 
         uint32_t get_dst_packets() const;
-
         size_t get_dst_bytes_sum() const;
-
         double get_dst_bytes_avg() const;
-
         size_t get_dst_bytes_max() const;
-
         size_t get_dst_bytes_min() const;
-
         double get_dst_bytes_std() const;
-
-        size_t get_conn_bytes_sum() const;
-
-        double get_conn_bytes_avg() const;
-
-        size_t get_conn_bytes_max() const;
-
-        size_t get_conn_bytes_min() const;
-
-        double get_conn_bytes_std() const;
-
-        double get_conn_bytes_rate() const;
-
         double get_dst_bytes_rate() const;
-
         double get_dst_packets_rate() const;
-
         uint64_t get_dst_duration_ms() const;
-
         uint64_t get_dst_gap_sum() const;
-
         double get_dst_gap_avg() const;
-
         uint64_t get_dst_gap_max() const;
-
         uint64_t get_dst_gap_min() const;
-
         double get_dst_gap_std() const;
 
         uint64_t get_conn_gap_sum() const;
-
         double get_conn_gap_avg() const;
-
         uint64_t get_conn_gap_max() const;
-
         uint64_t get_conn_gap_min() const;
-
         double get_conn_gap_std() const;
-
         uint32_t get_conn_packets() const;
+        double get_conn_packets_rate() const;
+        size_t get_conn_bytes_sum() const;
+        double get_conn_bytes_avg() const;
+        size_t get_conn_bytes_max() const;
+        size_t get_conn_bytes_min() const;
+        double get_conn_bytes_std() const;
+        double get_conn_bytes_rate() const;
 
         uint64_t get_duration_ms() const;
-
-        double get_bytes_rate() const;
-
-        double get_conn_packets_rate() const;
 
         uint32_t get_wrong_fragments() const;
 
@@ -361,6 +321,9 @@ namespace FeatureExtractor {
         uint32_t get_dst_rst_packets() const;
         uint32_t get_dst_syn_packets() const;
         uint32_t get_dst_fin_packets() const;
+
+        double get_down_up_bytes_ratio() const;
+        double get_down_up_packets_ratio() const;
 
         virtual service_t get_service() const = 0;    // Pure virtual function
         const char *get_service_str() const;

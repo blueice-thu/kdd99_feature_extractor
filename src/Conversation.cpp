@@ -325,17 +325,11 @@ namespace FeatureExtractor {
     }
 
     double Conversation::get_conn_bytes_rate() const {
-        uint64_t duration = get_dst_duration_ms();
-        if (dst_packets == 0 || duration == 0) return 0.0;
-        return dst_bytes_sum * 1.0 / duration;
-    }
-    //endregion
-
-    double Conversation::get_bytes_rate() const {
         uint64_t duration = get_duration_ms();
         if (src_packets + dst_packets == 0 || duration == 0) return 0.0;
         return (src_bytes_sum + dst_bytes_sum) * 1.0 / duration;
     }
+    //endregion
 
     // region Packets
     uint32_t Conversation::get_conn_packets() const {
@@ -443,6 +437,16 @@ namespace FeatureExtractor {
 
     uint32_t Conversation::get_wrong_fragments() const {
         return wrong_fragments;
+    }
+
+    double Conversation::get_down_up_bytes_ratio() const {
+        if (src_bytes_sum == 0 || dst_bytes_sum == 0) return 0;
+        return dst_bytes_sum * 1.0 / src_bytes_sum;
+    }
+
+    double Conversation::get_down_up_packets_ratio() const {
+        if (src_packets == 0 || dst_packets == 0) return 0;
+        return dst_packets * 1.0 / src_packets;
     }
 
     // region Tcp flags

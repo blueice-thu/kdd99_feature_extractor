@@ -173,13 +173,13 @@ namespace FeatureExtractor {
         int64_t dst_gap_ms_min;
         int64_t dst_gap_ms_squ;
 
-        uint32_t packets;
+        uint32_t conn_packets;
         Timestamp start_ts;
         Timestamp last_ts;
-        int64_t gap_ms_sum;
-        int64_t gap_ms_max;
-        int64_t gap_ms_min;
-        int64_t gap_ms_squ;
+        int64_t conn_gap_ms_sum;
+        int64_t conn_gap_ms_max;
+        int64_t conn_gap_ms_min;
+        int64_t conn_gap_ms_squ;
 
         uint32_t wrong_fragments;    // TODO: not implemented (IP checksum)
         uint32_t cwr_packets;
@@ -269,6 +269,18 @@ namespace FeatureExtractor {
 
         double get_dst_bytes_std() const;
 
+        size_t get_conn_bytes_sum() const;
+
+        double get_conn_bytes_avg() const;
+
+        size_t get_conn_bytes_max() const;
+
+        size_t get_conn_bytes_min() const;
+
+        double get_conn_bytes_std() const;
+
+        double get_conn_bytes_rate() const;
+
         double get_dst_bytes_rate() const;
 
         double get_dst_packets_rate() const;
@@ -285,23 +297,23 @@ namespace FeatureExtractor {
 
         double get_dst_gap_std() const;
 
-        uint64_t get_gap_sum() const;
+        uint64_t get_conn_gap_sum() const;
 
-        double get_gap_avg() const;
+        double get_conn_gap_avg() const;
 
-        uint64_t get_gap_max() const;
+        uint64_t get_conn_gap_max() const;
 
-        uint64_t get_gap_min() const;
+        uint64_t get_conn_gap_min() const;
 
-        double get_gap_std() const;
+        double get_conn_gap_std() const;
 
-        uint32_t get_packets() const;
+        uint32_t get_conn_packets() const;
 
         uint64_t get_duration_ms() const;
 
         double get_bytes_rate() const;
 
-        double get_packets_rate() const;
+        double get_conn_packets_rate() const;
 
         uint32_t get_wrong_fragments() const;
 

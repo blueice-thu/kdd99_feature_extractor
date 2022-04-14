@@ -199,6 +199,7 @@ namespace FeatureExtractor {
         ss << conv->get_service_str() << ',';
         ss << conv->get_state_str() << ',';
 
+        ss << fixed << showpoint << setprecision(2);
         ss << conv->get_src_packets() << ',';
         ss << conv->get_src_packets_rate() << ',';
         ss << conv->get_src_bytes_sum() << ',';
@@ -217,6 +218,15 @@ namespace FeatureExtractor {
         ss << conv->get_dst_bytes_std() << ',';
         ss << conv->get_dst_bytes_rate() << ',';
 
+        ss << conv->get_conn_packets() << ',';
+        ss << conv->get_conn_packets_rate() << ',';
+        ss << conv->get_conn_bytes_sum() << ',';
+        ss << conv->get_conn_bytes_avg() << ',';
+        ss << conv->get_conn_bytes_max() << ',';
+        ss << conv->get_conn_bytes_min() << ',';
+        ss << conv->get_conn_bytes_std() << ',';
+        ss << conv->get_conn_bytes_rate() << ',';
+
         ss << conv->get_src_gap_sum() << ',';
         ss << conv->get_src_gap_avg() << ',';
         ss << conv->get_src_gap_max() << ',';
@@ -229,11 +239,11 @@ namespace FeatureExtractor {
         ss << conv->get_dst_gap_min() << ',';
         ss << conv->get_dst_gap_std() << ',';
 
-        ss << conv->get_gap_sum() << ',';
-        ss << conv->get_gap_avg() << ',';
-        ss << conv->get_gap_max() << ',';
-        ss << conv->get_gap_min() << ',';
-        ss << conv->get_gap_std() << ',';
+        ss << conv->get_conn_gap_sum() << ',';
+        ss << conv->get_conn_gap_avg() << ',';
+        ss << conv->get_conn_gap_max() << ',';
+        ss << conv->get_conn_gap_min() << ',';
+        ss << conv->get_conn_gap_std() << ',';
 
         ss << conv->land() << ',';
         ss << conv->get_wrong_fragments() << ',';
@@ -247,7 +257,6 @@ namespace FeatureExtractor {
         ss << conv->get_fin_packets() << ',';
 
         // Derived time windows features
-        ss << fixed << showpoint << setprecision(2);
         ss << count << ',';
         ss << srv_count << ',';
         ss << serror_rate << ',';

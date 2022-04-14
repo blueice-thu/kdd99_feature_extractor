@@ -135,13 +135,13 @@ namespace FeatureExtractor {
         dst_gap_ms_min = 0;
         dst_gap_ms_squ = 0;
 
-        packets = 0;
         start_ts = Timestamp();
         last_ts = Timestamp();
-        gap_ms_sum = 0;
-        gap_ms_max = 0;
-        gap_ms_min = 0;
-        gap_ms_squ = 0;
+        conn_packets = 0;
+        conn_gap_ms_sum = 0;
+        conn_gap_ms_max = 0;
+        conn_gap_ms_min = 0;
+        conn_gap_ms_squ = 0;
 
         wrong_fragments = 0;
         cwr_packets = 0;
@@ -285,6 +285,34 @@ namespace FeatureExtractor {
     }
     // endregion
 
+    // region Connection bytes
+    size_t Conversation::get_conn_bytes_sum() const {
+        return src_bytes_sum + dst_bytes_sum;
+    }
+
+    double Conversation::get_conn_bytes_avg() const {
+        return (src_bytes_sum + dst_bytes_sum) * 1.0 / conn_packets;
+    }
+
+    size_t Conversation::get_conn_bytes_max() const {
+        return max(src_bytes_max, dst_bytes_max);
+    }
+
+    size_t Conversation::get_conn_bytes_min() const {
+        return min(src_bytes_min, dst_bytes_min);
+    }
+
+    double Conversation::get_conn_bytes_std() const {
+        return calculate_standard_deviation(conn_packets, (src_bytes_sum + dst_bytes_sum) * 1.0, (src_bytes_squ + dst_bytes_squ) * 1.0);
+    }
+
+    double Conversation::get_conn_bytes_rate() const {
+        uint64_t duration = get_dst_duration_ms();
+        if (dst_packets == 0 || duration == 0) return 0.0;
+        return dst_bytes_sum * 1.0 / duration;
+    }
+    //endregion
+
     double Conversation::get_bytes_rate() const {
         uint64_t duration = get_duration_ms();
         if (src_packets + dst_packets == 0 || duration == 0) return 0.0;
@@ -292,8 +320,8 @@ namespace FeatureExtractor {
     }
 
     // region Packets
-    uint32_t Conversation::get_packets() const {
-        return packets;
+    uint32_t Conversation::get_conn_packets() const {
+        return conn_packets;
     }
 
     uint32_t Conversation::get_src_packets() const {
@@ -304,10 +332,10 @@ namespace FeatureExtractor {
         return dst_packets;
     }
 
-    double Conversation::get_packets_rate() const {
+    double Conversation::get_conn_packets_rate() const {
         uint64_t duration = get_duration_ms();
         if (src_packets + dst_packets == 0 || duration == 0) return 0.0;
-        return packets * 1.0 / duration;
+        return conn_packets * 1.0 / duration;
     }
 
     double Conversation::get_src_packets_rate() const {
@@ -372,26 +400,26 @@ namespace FeatureExtractor {
     //endregion
 
     // region Gap
-    uint64_t Conversation::get_gap_sum() const {
-        return gap_ms_sum;
+    uint64_t Conversation::get_conn_gap_sum() const {
+        return conn_gap_ms_sum;
     }
 
-    double Conversation::get_gap_avg() const {
-        if (packets < 2) return 0.0;
-        return gap_ms_sum * 1.0 / (packets - 1);
+    double Conversation::get_conn_gap_avg() const {
+        if (conn_packets < 2) return 0.0;
+        return conn_gap_ms_sum * 1.0 / (conn_packets - 1);
     }
 
-    uint64_t Conversation::get_gap_max() const {
-        return gap_ms_max;
+    uint64_t Conversation::get_conn_gap_max() const {
+        return conn_gap_ms_max;
     }
 
-    uint64_t Conversation::get_gap_min() const {
-        return gap_ms_min;
+    uint64_t Conversation::get_conn_gap_min() const {
+        return conn_gap_ms_min;
     }
 
-    double Conversation::get_gap_std() const {
-        if (packets < 2) return 0.0;
-        return calculate_standard_deviation(packets - 1, gap_ms_sum, gap_ms_squ);
+    double Conversation::get_conn_gap_std() const {
+        if (conn_packets < 2) return 0.0;
+        return calculate_standard_deviation(conn_packets - 1, conn_gap_ms_sum, conn_gap_ms_squ);
     }
     // endregion
 
@@ -399,6 +427,7 @@ namespace FeatureExtractor {
         return wrong_fragments;
     }
 
+    // region Tcp flags
     uint32_t Conversation::get_cwr_packets() const {
         return cwr_packets;
     }
@@ -430,6 +459,7 @@ namespace FeatureExtractor {
     uint32_t Conversation::get_fin_packets() const {
         return fin_packets;
     }
+    // endregion
 
     const char *Conversation::get_service_str() const {
         // Ensure size of strins matches number of values for enum at compilation time
@@ -484,16 +514,16 @@ namespace FeatureExtractor {
 
     bool Conversation::add_packet(const Packet *packet) {
         // Timestamps
-        if (packets == 0)
+        if (conn_packets == 0)
             start_ts = packet->get_start_ts();
         else {
             int64_t gap = (packet->get_start_ts() - last_ts).get_total_msecs();
-            if (packets == 1)
-                gap_ms_min = gap;
-            gap_ms_sum += gap;
-            gap_ms_max = max(gap_ms_max, gap);
-            gap_ms_min = min(gap_ms_min, gap);
-            gap_ms_squ += gap * gap;
+            if (conn_packets == 1)
+                conn_gap_ms_min = gap;
+            conn_gap_ms_sum += gap;
+            conn_gap_ms_max = max(conn_gap_ms_max, gap);
+            conn_gap_ms_min = min(conn_gap_ms_min, gap);
+            conn_gap_ms_squ += gap * gap;
         }
         last_ts = packet->get_end_ts();
 
@@ -547,7 +577,7 @@ namespace FeatureExtractor {
 
         // Packet counts
         //TODO: wrong_fragments
-        packets++;
+        conn_packets++;
         if (packet->get_tcp_flags().cwr()) cwr_packets++;
         if (packet->get_tcp_flags().ece()) ece_packets++;
         if (packet->get_tcp_flags().urg()) urg_packets++;
@@ -667,7 +697,7 @@ namespace FeatureExtractor {
         ss << " --> " << (int) dip[0] << "." << (int) dip[1] << "." << (int) dip[2] << "." << (int) dip[3] << ":"
            << five_tuple.get_dst_port() << endl;
         ss << "  src_bytes_sum=" << src_bytes_sum << " dst_bytes_sum=" << dst_bytes_sum << " land=" << land() << endl;
-        ss << "  pkts=" << packets << " src_pkts=" << src_packets << " dst_pkts=" << dst_packets << endl;
+        ss << "  pkts=" << conn_packets << " src_pkts=" << src_packets << " dst_pkts=" << dst_packets << endl;
         ss << "  wrong_frags=" << wrong_fragments << " urg_pkts=" << urg_packets << endl;
         ss << "  state=" << get_state_str() << " internal_state=" << state_to_str(state) << endl;
         ss << endl;

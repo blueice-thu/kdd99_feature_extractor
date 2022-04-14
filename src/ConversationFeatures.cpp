@@ -229,6 +229,12 @@ namespace FeatureExtractor {
         ss << conv->get_dst_gap_min() << ',';
         ss << conv->get_dst_gap_std() << ',';
 
+        ss << conv->get_gap_sum() << ',';
+        ss << conv->get_gap_avg() << ',';
+        ss << conv->get_gap_max() << ',';
+        ss << conv->get_gap_min() << ',';
+        ss << conv->get_gap_std() << ',';
+
         ss << conv->land() << ',';
         ss << conv->get_wrong_fragments() << ',';
         ss << conv->get_urgent_packets() << ',';

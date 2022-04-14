@@ -176,6 +176,10 @@ namespace FeatureExtractor {
         uint32_t packets;
         Timestamp start_ts;
         Timestamp last_ts;
+        int64_t gap_ms_sum;
+        int64_t gap_ms_max;
+        int64_t gap_ms_min;
+        int64_t gap_ms_squ;
 
         uint32_t wrong_fragments;    // TODO: not implemented (IP checksum)
         uint32_t urgent_packets;
@@ -273,6 +277,16 @@ namespace FeatureExtractor {
         uint64_t get_dst_gap_min() const;
 
         double get_dst_gap_std() const;
+
+        uint64_t get_gap_sum() const;
+
+        double get_gap_avg() const;
+
+        uint64_t get_gap_max() const;
+
+        uint64_t get_gap_min() const;
+
+        double get_gap_std() const;
 
         uint32_t get_packets() const;
 

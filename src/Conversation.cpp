@@ -138,6 +138,10 @@ namespace FeatureExtractor {
         packets = 0;
         start_ts = Timestamp();
         last_ts = Timestamp();
+        gap_ms_sum = 0;
+        gap_ms_max = 0;
+        gap_ms_min = 0;
+        gap_ms_squ = 0;
 
         wrong_fragments = 0;
         urgent_packets = 0;
@@ -220,6 +224,7 @@ namespace FeatureExtractor {
     }
 
     double Conversation::get_src_bytes_avg() const {
+        if (src_bytes_sum == 0) return 0.0;
         return src_bytes_sum * 1.0 / src_packets;
     }
 
@@ -249,6 +254,7 @@ namespace FeatureExtractor {
     }
 
     double Conversation::get_dst_bytes_avg() const {
+        if (dst_bytes_sum == 0) return 0.0;
         return dst_bytes_sum * 1.0 / dst_packets;
     }
 
@@ -358,6 +364,30 @@ namespace FeatureExtractor {
     }
     //endregion
 
+    // region Gap
+    uint64_t Conversation::get_gap_sum() const {
+        return gap_ms_sum;
+    }
+
+    double Conversation::get_gap_avg() const {
+        if (packets < 2) return 0.0;
+        return gap_ms_sum * 1.0 / (packets - 1);
+    }
+
+    uint64_t Conversation::get_gap_max() const {
+        return gap_ms_max;
+    }
+
+    uint64_t Conversation::get_gap_min() const {
+        return gap_ms_min;
+    }
+
+    double Conversation::get_gap_std() const {
+        if (packets < 2) return 0.0;
+        return calculate_standard_deviation(packets - 1, gap_ms_sum, gap_ms_squ);
+    }
+    // endregion
+
     uint32_t Conversation::get_wrong_fragments() const {
         return wrong_fragments;
     }
@@ -421,6 +451,15 @@ namespace FeatureExtractor {
         // Timestamps
         if (packets == 0)
             start_ts = packet->get_start_ts();
+        else {
+            int64_t gap = (packet->get_start_ts() - last_ts).get_total_msecs();
+            if (packets == 1)
+                gap_ms_min = gap;
+            gap_ms_sum += gap;
+            gap_ms_max = max(gap_ms_max, gap);
+            gap_ms_min = min(gap_ms_min, gap);
+            gap_ms_squ += gap * gap;
+        }
         last_ts = packet->get_end_ts();
 
         // Add byte counts for correct direction

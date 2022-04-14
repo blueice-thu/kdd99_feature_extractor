@@ -144,7 +144,14 @@ namespace FeatureExtractor {
         gap_ms_squ = 0;
 
         wrong_fragments = 0;
-        urgent_packets = 0;
+        cwr_packets = 0;
+        ece_packets = 0;
+        urg_packets = 0;
+        ack_packets = 0;
+        psh_packets = 0;
+        rst_packets = 0;
+        syn_packets = 0;
+        fin_packets = 0;
     }
 
 
@@ -392,8 +399,36 @@ namespace FeatureExtractor {
         return wrong_fragments;
     }
 
-    uint32_t Conversation::get_urgent_packets() const {
-        return urgent_packets;
+    uint32_t Conversation::get_cwr_packets() const {
+        return cwr_packets;
+    }
+
+    uint32_t Conversation::get_ece_packets() const {
+        return ece_packets;
+    }
+
+    uint32_t Conversation::get_urg_packets() const {
+        return urg_packets;
+    }
+
+    uint32_t Conversation::get_ack_packets() const {
+        return ack_packets;
+    }
+
+    uint32_t Conversation::get_psh_packets() const {
+        return psh_packets;
+    }
+
+    uint32_t Conversation::get_rst_packets() const {
+        return rst_packets;
+    }
+
+    uint32_t Conversation::get_syn_packets() const {
+        return syn_packets;
+    }
+
+    uint32_t Conversation::get_fin_packets() const {
+        return fin_packets;
     }
 
     const char *Conversation::get_service_str() const {
@@ -513,8 +548,14 @@ namespace FeatureExtractor {
         // Packet counts
         //TODO: wrong_fragments
         packets++;
-        if (packet->get_tcp_flags().urg())
-            urgent_packets++;
+        if (packet->get_tcp_flags().cwr()) cwr_packets++;
+        if (packet->get_tcp_flags().ece()) ece_packets++;
+        if (packet->get_tcp_flags().urg()) urg_packets++;
+        if (packet->get_tcp_flags().ack()) ack_packets++;
+        if (packet->get_tcp_flags().psh()) psh_packets++;
+        if (packet->get_tcp_flags().rst()) rst_packets++;
+        if (packet->get_tcp_flags().syn()) syn_packets++;
+        if (packet->get_tcp_flags().fin()) fin_packets++;
 
         // Make state transitions according to packet
         update_state(packet);
@@ -537,58 +578,40 @@ namespace FeatureExtractor {
         switch (state) {
             case INIT:
                 return "INIT";
-                break;
             case S0:
                 return "S0";
-                break;
             case S1:
                 return "S1";
-                break;
             case S2:
                 return "S2";
-                break;
             case S3:
                 return "S3";
-                break;
             case SF:
                 return "SF";
-                break;
             case REJ:
                 return "REJ";
-                break;
             case RSTOS0:
                 return "RSTOS0";
-                break;
             case RSTO:
                 return "RSTO";
-                break;
             case RSTR:
                 return "RSTR";
-                break;
             case SH:
                 return "SH";
-                break;
             case RSTRH:
                 return "RSTRH";
-                break;
             case SHR:
                 return "SHR";
-                break;
             case OTH:
                 return "OTH";
-                break;
             case ESTAB:
                 return "ESTAB";
-                break;
             case S4:
                 return "S4";
-                break;
             case S2F:
                 return "S2F";
-                break;
             case S3F:
                 return "S3F";
-                break;
             default:
                 break;
         }
@@ -645,7 +668,7 @@ namespace FeatureExtractor {
            << five_tuple.get_dst_port() << endl;
         ss << "  src_bytes_sum=" << src_bytes_sum << " dst_bytes_sum=" << dst_bytes_sum << " land=" << land() << endl;
         ss << "  pkts=" << packets << " src_pkts=" << src_packets << " dst_pkts=" << dst_packets << endl;
-        ss << "  wrong_frags=" << wrong_fragments << " urg_pkts=" << urgent_packets << endl;
+        ss << "  wrong_frags=" << wrong_fragments << " urg_pkts=" << urg_packets << endl;
         ss << "  state=" << get_state_str() << " internal_state=" << state_to_str(state) << endl;
         ss << endl;
 

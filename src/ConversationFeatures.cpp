@@ -237,7 +237,14 @@ namespace FeatureExtractor {
 
         ss << conv->land() << ',';
         ss << conv->get_wrong_fragments() << ',';
-        ss << conv->get_urgent_packets() << ',';
+        ss << conv->get_cwr_packets() << ',';
+        ss << conv->get_ece_packets() << ',';
+        ss << conv->get_urg_packets() << ',';
+        ss << conv->get_ack_packets() << ',';
+        ss << conv->get_psh_packets() << ',';
+        ss << conv->get_rst_packets() << ',';
+        ss << conv->get_syn_packets() << ',';
+        ss << conv->get_fin_packets() << ',';
 
         // Derived time windows features
         ss << fixed << showpoint << setprecision(2);

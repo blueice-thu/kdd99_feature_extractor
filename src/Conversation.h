@@ -182,7 +182,14 @@ namespace FeatureExtractor {
         int64_t gap_ms_squ;
 
         uint32_t wrong_fragments;    // TODO: not implemented (IP checksum)
-        uint32_t urgent_packets;
+        uint32_t cwr_packets;
+        uint32_t ece_packets;
+        uint32_t urg_packets;
+        uint32_t ack_packets;
+        uint32_t psh_packets;
+        uint32_t rst_packets;
+        uint32_t syn_packets;
+        uint32_t fin_packets;
 
         virtual void update_state(const Packet *packet);
 
@@ -298,7 +305,14 @@ namespace FeatureExtractor {
 
         uint32_t get_wrong_fragments() const;
 
-        uint32_t get_urgent_packets() const;
+        uint32_t get_cwr_packets() const;
+        uint32_t get_ece_packets() const;
+        uint32_t get_urg_packets() const;
+        uint32_t get_ack_packets() const;
+        uint32_t get_psh_packets() const;
+        uint32_t get_rst_packets() const;
+        uint32_t get_syn_packets() const;
+        uint32_t get_fin_packets() const;
 
         virtual service_t get_service() const = 0;    // Pure virtual function
         const char *get_service_str() const;

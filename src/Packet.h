@@ -17,6 +17,7 @@ namespace FeatureExtractor {
         FiveTuple five_tuple;
 
         tcp_field_flags_t tcp_flags;
+        uint16_t tcp_window_size;
         icmp_field_type_t icmp_type;
         uint8_t icmp_code;
         size_t length;
@@ -67,6 +68,10 @@ namespace FeatureExtractor {
         tcp_field_flags_t get_tcp_flags() const;
 
         void set_tcp_flags(tcp_field_flags_t tcp_flags);
+
+        uint16_t get_tcp_window_size() const;
+
+        void set_tcp_window_size(uint16_t tcp_window_size);
 
         icmp_field_type_t get_icmp_type() const;
 

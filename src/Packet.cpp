@@ -7,12 +7,11 @@ namespace FeatureExtractor {
 
     Packet::Packet()
             : start_ts(), eth2(false), eth_type(TYPE_ZERO), five_tuple(), tcp_flags(), icmp_type(ECHOREPLY),
-              icmp_code(0), length(0) {
+              icmp_code(0), length(0), tcp_window_size(0) {
     }
 
 
-    Packet::~Packet() {
-    }
+    Packet::~Packet() = default;
 
     Timestamp Packet::get_start_ts() const {
         return start_ts;
@@ -97,6 +96,14 @@ namespace FeatureExtractor {
 
     void Packet::set_tcp_flags(tcp_field_flags_t tcp_flags) {
         this->tcp_flags = tcp_flags;
+    }
+
+    uint16_t Packet::get_tcp_window_size() const {
+        return tcp_window_size;
+    }
+
+    void Packet::set_tcp_window_size(uint16_t tcp_window_size) {
+        this->tcp_window_size = tcp_window_size;
     }
 
     icmp_field_type_t Packet::get_icmp_type() const {

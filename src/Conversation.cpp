@@ -170,6 +170,11 @@ namespace FeatureExtractor {
         dst_rst_packets = 0;
         dst_syn_packets = 0;
         dst_fin_packets = 0;
+
+        src_init_window_size = -1;
+        src_init_window_bytes = 0;
+        dst_init_window_size = -1;
+        dst_init_window_bytes = 0;
     }
 
 
@@ -449,6 +454,14 @@ namespace FeatureExtractor {
         return dst_packets * 1.0 / src_packets;
     }
 
+    uint32_t Conversation::get_src_init_window_bytes() const {
+        return src_init_window_bytes;
+    }
+
+    uint32_t Conversation::get_dst_init_window_bytes() const {
+        return dst_init_window_bytes;
+    }
+
     // region Tcp flags
     uint32_t Conversation::get_cwr_packets() const {
         return cwr_packets;
@@ -497,13 +510,10 @@ namespace FeatureExtractor {
         switch (five_tuple.get_ip_proto()) {
             case TCP:
                 return "tcp";
-                break;
             case UDP:
                 return "udp";
-                break;
             case ICMP:
                 return "icmp";
-                break;
             default:
                 break;
         }
@@ -551,6 +561,7 @@ namespace FeatureExtractor {
 
         // Add byte counts for correct direction
         size_t packet_length = packet->get_length();
+
         if (packet->get_src_ip() == five_tuple.get_src_ip()) {
             if (src_packets == 0) {
                 src_start_ts = packet->get_start_ts();
@@ -582,6 +593,15 @@ namespace FeatureExtractor {
             if (packet->get_tcp_flags().rst()) src_rst_packets++;
             if (packet->get_tcp_flags().syn()) src_syn_packets++;
             if (packet->get_tcp_flags().fin()) src_fin_packets++;
+
+            if (packet->get_ip_proto() == TCP) {
+                if (src_init_window_size == -1)
+                    src_init_window_size = packet->get_tcp_window_size();
+                if (src_init_window_size == packet->get_tcp_window_size())
+                    src_init_window_bytes += packet_length;
+                else
+                    src_init_window_size = -2;
+            }
         } else {
             if (dst_packets == 0) {
                 dst_start_ts = packet->get_start_ts();
@@ -613,6 +633,15 @@ namespace FeatureExtractor {
             if (packet->get_tcp_flags().rst()) dst_rst_packets++;
             if (packet->get_tcp_flags().syn()) dst_syn_packets++;
             if (packet->get_tcp_flags().fin()) dst_fin_packets++;
+
+            if (packet->get_ip_proto() == TCP) {
+                if (dst_init_window_size == -1)
+                    dst_init_window_size = packet->get_tcp_window_size();
+                if (dst_init_window_size == packet->get_tcp_window_size())
+                    dst_init_window_bytes += packet_length;
+                else
+                    dst_init_window_size = -2;
+            }
         }
 
         // Packet counts

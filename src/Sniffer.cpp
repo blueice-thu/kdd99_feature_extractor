@@ -127,6 +127,8 @@ namespace FeatureExtractor {
         f->set_ip_flag_mf(ip->flag_mf());
         f->set_ip_frag_offset((uint16_t) ip->frag_offset());
         f->set_ip_payload_length(ntohs(ip->total_length) - ip->header_length());
+        f->set_ip_ttl(ip->ttl);
+        f->set_ip_checksum(ip->checksum);
 
         // Look for L4 headers only in first fragment
         if (f->get_ip_frag_offset() > 0)
@@ -144,6 +146,7 @@ namespace FeatureExtractor {
                 f->set_src_port(ntohs(tcp->src_port));
                 f->set_dst_port(ntohs(tcp->dst_port));
                 f->set_tcp_flags(tcp->flags);
+                f->set_tcp_window_size(tcp->window_size);
                 break;
 
             case UDP:

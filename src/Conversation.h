@@ -209,6 +209,11 @@ namespace FeatureExtractor {
         uint32_t dst_syn_packets;
         uint32_t dst_fin_packets;
 
+        int32_t src_init_window_size;
+        uint32_t src_init_window_bytes;
+        int32_t dst_init_window_size;
+        uint32_t dst_init_window_bytes;
+
         virtual void update_state(const Packet *packet);
 
         static const char *state_to_str(conversation_state_t state);
@@ -324,6 +329,9 @@ namespace FeatureExtractor {
 
         double get_down_up_bytes_ratio() const;
         double get_down_up_packets_ratio() const;
+
+        uint32_t get_src_init_window_bytes() const;
+        uint32_t get_dst_init_window_bytes() const;
 
         virtual service_t get_service() const = 0;    // Pure virtual function
         const char *get_service_str() const;

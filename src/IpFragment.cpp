@@ -5,13 +5,10 @@ namespace FeatureExtractor {
     using namespace std;
 
     IpFragment::IpFragment()
-            : Packet(), ip_flag_mf(0), ip_frag_offset(0), ip_payload_length(0) {
+            : Packet(), ip_flag_mf(false), ip_frag_offset(0), ip_payload_length(0) {
     }
 
-
-    IpFragment::~IpFragment() {
-
-    }
+    IpFragment::~IpFragment() = default;
 
     uint16_t IpFragment::get_ip_id() const {
         return ip_id;
@@ -43,6 +40,22 @@ namespace FeatureExtractor {
 
     void IpFragment::set_ip_payload_length(size_t ip_payload_length) {
         this->ip_payload_length = ip_payload_length;
+    }
+
+    void IpFragment::set_ip_ttl(uint8_t ip_ttl) {
+        this->ip_ttl = ip_ttl;
+    }
+
+    uint8_t IpFragment::get_ip_ttl() const {
+        return ip_ttl;
+    }
+
+    void IpFragment::set_ip_checksum(uint16_t ip_checksum) {
+        this->ip_checksum = ip_checksum;
+    }
+
+    uint16_t IpFragment::get_ip_checksum() const {
+        return ip_checksum;
     }
 
     void IpFragment::print() const {

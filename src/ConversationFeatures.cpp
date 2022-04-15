@@ -281,6 +281,16 @@ namespace FeatureExtractor {
         ss << conv->get_down_up_bytes_ratio() << ',';
         ss << conv->get_down_up_packets_ratio() << ',';
 
+        ss << conv->get_src_ttl_avg() << ',';
+        ss << (uint16_t)conv->get_src_ttl_max() << ',';
+        ss << (uint16_t)conv->get_src_ttl_min() << ',';
+        ss << conv->get_src_ttl_std() << ',';
+
+        ss << conv->get_dst_ttl_avg() << ',';
+        ss << (uint16_t)conv->get_dst_ttl_max() << ',';
+        ss << (uint16_t)conv->get_dst_ttl_min() << ',';
+        ss << conv->get_dst_ttl_std() << ',';
+
         // Derived time windows features
         ss << count << ',';
         ss << srv_count << ',';

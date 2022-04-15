@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include "Conversation.h"
+#include "IpFragment.h"
 
 namespace FeatureExtractor {
     using namespace std;
@@ -175,8 +176,17 @@ namespace FeatureExtractor {
         src_init_window_bytes = 0;
         dst_init_window_size = -1;
         dst_init_window_bytes = 0;
-    }
 
+        src_ttl_sum = 0;
+        src_ttl_max = 0;
+        src_ttl_min = 0;
+        src_ttl_squ = 0;
+
+        dst_ttl_sum = 0;
+        dst_ttl_max = 0;
+        dst_ttl_min = 0;
+        dst_ttl_squ = 0;
+    }
 
     FiveTuple Conversation::get_five_tuple() const {
         return five_tuple;
@@ -195,23 +205,18 @@ namespace FeatureExtractor {
         switch (state) {
             case ESTAB:
                 return S1;
-                break;
 
             case S4:
                 return OTH;
-                break;
 
             case S2F:
                 return S2;
-                break;
 
             case S3F:
                 return S3;
-                break;
 
             default:
                 return state;
-                break;
         }
         return state;
     }
@@ -440,6 +445,46 @@ namespace FeatureExtractor {
     }
     // endregion
 
+    // region Src ttl
+    double Conversation::get_src_ttl_avg() const {
+        if (src_packets == 0) return 0.0;
+        return src_ttl_sum * 1.0 / src_packets;
+    }
+
+    uint8_t Conversation::get_src_ttl_max() const {
+        return src_ttl_max;
+    }
+
+    uint8_t Conversation::get_src_ttl_min() const {
+        return src_ttl_min;
+    }
+
+    double Conversation::get_src_ttl_std() const {
+        if (src_packets == 0) return 0.0;
+        return calculate_standard_deviation(src_packets, src_ttl_sum, src_ttl_squ);
+    }
+    //endregion
+
+    // region Dst ttl
+    double Conversation::get_dst_ttl_avg() const {
+        if (dst_packets == 0) return 0.0;
+        return dst_ttl_sum * 1.0 / dst_packets;
+    }
+
+    uint8_t Conversation::get_dst_ttl_max() const {
+        return dst_ttl_max;
+    }
+
+    uint8_t Conversation::get_dst_ttl_min() const {
+        return dst_ttl_min;
+    }
+
+    double Conversation::get_dst_ttl_std() const {
+        if (dst_packets == 0) return 0.0;
+        return calculate_standard_deviation(dst_packets, dst_ttl_sum, dst_ttl_squ);
+    }
+    //endregion
+
     uint32_t Conversation::get_wrong_fragments() const {
         return wrong_fragments;
     }
@@ -531,7 +576,6 @@ namespace FeatureExtractor {
             case S2:
             case S3:
                 return true;
-                break;
 
             default:
                 break;
@@ -560,13 +604,16 @@ namespace FeatureExtractor {
         last_ts = packet->get_end_ts();
 
         // Add byte counts for correct direction
+        IpFragment *fragment = (IpFragment*) packet;
         size_t packet_length = packet->get_length();
+        uint8_t ttl = fragment->get_ip_ttl();
 
         if (packet->get_src_ip() == five_tuple.get_src_ip()) {
             if (src_packets == 0) {
                 src_start_ts = packet->get_start_ts();
                 src_last_ts = packet->get_end_ts();
                 src_bytes_min = packet_length;
+                src_ttl_min = ttl;
             } else {
                 int64_t gap = (packet->get_start_ts() - src_last_ts).get_total_msecs();
                 if (src_packets == 1) {
@@ -602,11 +649,17 @@ namespace FeatureExtractor {
                 else
                     src_init_window_size = -2;
             }
+
+            src_ttl_sum += ttl;
+            src_ttl_max = max(src_ttl_max, ttl);
+            src_ttl_min = min(src_ttl_min, ttl);
+            src_ttl_squ += (uint32_t)ttl * (uint32_t)ttl;
         } else {
             if (dst_packets == 0) {
                 dst_start_ts = packet->get_start_ts();
                 dst_last_ts = packet->get_end_ts();
                 dst_bytes_min = packet_length;
+                dst_ttl_min = ttl;
             } else {
                 int64_t gap = (packet->get_start_ts() - dst_last_ts).get_total_msecs();
                 if (dst_packets == 1) {
@@ -642,6 +695,11 @@ namespace FeatureExtractor {
                 else
                     dst_init_window_size = -2;
             }
+
+            dst_ttl_sum += ttl;
+            dst_ttl_max = max(dst_ttl_max, ttl);
+            dst_ttl_min = min(dst_ttl_min, ttl);
+            dst_ttl_squ += (uint32_t)ttl * (uint32_t)ttl;
         }
 
         // Packet counts

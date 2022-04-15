@@ -214,6 +214,16 @@ namespace FeatureExtractor {
         int32_t dst_init_window_size;
         uint32_t dst_init_window_bytes;
 
+        uint32_t src_ttl_sum;
+        uint8_t src_ttl_max;
+        uint8_t src_ttl_min;
+        uint32_t src_ttl_squ;
+
+        uint32_t dst_ttl_sum;
+        uint8_t dst_ttl_max;
+        uint8_t dst_ttl_min;
+        uint32_t dst_ttl_squ;
+
         virtual void update_state(const Packet *packet);
 
         static const char *state_to_str(conversation_state_t state);
@@ -332,6 +342,16 @@ namespace FeatureExtractor {
 
         uint32_t get_src_init_window_bytes() const;
         uint32_t get_dst_init_window_bytes() const;
+
+        double get_src_ttl_avg() const;
+        uint8_t get_src_ttl_max() const;
+        uint8_t get_src_ttl_min() const;
+        double get_src_ttl_std() const;
+
+        double get_dst_ttl_avg() const;
+        uint8_t get_dst_ttl_max() const;
+        uint8_t get_dst_ttl_min() const;
+        double get_dst_ttl_std() const;
 
         virtual service_t get_service() const = 0;    // Pure virtual function
         const char *get_service_str() const;

@@ -224,6 +224,10 @@ namespace FeatureExtractor {
         uint8_t dst_ttl_min;
         uint32_t dst_ttl_squ;
 
+        Timestamp syn_ts;
+        Timestamp syn_ack_ts;
+        Timestamp ack_data_ts;
+
         virtual void update_state(const Packet *packet);
 
         static const char *state_to_str(conversation_state_t state);
@@ -352,6 +356,9 @@ namespace FeatureExtractor {
         uint8_t get_dst_ttl_max() const;
         uint8_t get_dst_ttl_min() const;
         double get_dst_ttl_std() const;
+
+        uint64_t get_syn_ack_gap() const;
+        uint64_t get_ack_data_gap() const;
 
         virtual service_t get_service() const = 0;    // Pure virtual function
         const char *get_service_str() const;

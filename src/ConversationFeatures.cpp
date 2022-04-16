@@ -245,6 +245,9 @@ namespace FeatureExtractor {
         ss << conv->get_conn_gap_min() << ',';
         ss << conv->get_conn_gap_std() << ',';
 
+        ss << conv->get_syn_ack_gap() << ",";
+        ss << conv->get_ack_data_gap() << ",";
+
         ss << conv->land() << ',';
         ss << conv->get_wrong_fragments() << ',';
 

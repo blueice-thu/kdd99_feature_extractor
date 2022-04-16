@@ -186,6 +186,10 @@ namespace FeatureExtractor {
         dst_ttl_max = 0;
         dst_ttl_min = 0;
         dst_ttl_squ = 0;
+
+        syn_ts = Timestamp();
+        syn_ack_ts = Timestamp();
+        ack_data_ts = Timestamp();
     }
 
     FiveTuple Conversation::get_five_tuple() const {
@@ -541,6 +545,20 @@ namespace FeatureExtractor {
     }
     // endregion
 
+    uint64_t Conversation::get_syn_ack_gap() const {
+        Timestamp zero_ts = Timestamp();
+        if (syn_ts == zero_ts) return 0;
+        else if (syn_ack_ts == zero_ts) return 75000;
+        return (syn_ack_ts - syn_ts).get_total_msecs();
+    }
+
+    uint64_t Conversation::get_ack_data_gap() const {
+        Timestamp zero_ts = Timestamp();
+        if (syn_ack_ts == zero_ts) return 0;
+        else if (ack_data_ts == zero_ts) return 75000;
+        return (ack_data_ts - syn_ack_ts).get_total_msecs();
+    }
+
     const char *Conversation::get_service_str() const {
         // Ensure size of strins matches number of values for enum at compilation time
 #ifdef static_assert
@@ -614,6 +632,7 @@ namespace FeatureExtractor {
                 src_last_ts = packet->get_end_ts();
                 src_bytes_min = packet_length;
                 src_ttl_min = ttl;
+
             } else {
                 int64_t gap = (packet->get_start_ts() - src_last_ts).get_total_msecs();
                 if (src_packets == 1) {
@@ -713,6 +732,14 @@ namespace FeatureExtractor {
         if (packet->get_tcp_flags().rst()) rst_packets++;
         if (packet->get_tcp_flags().syn()) syn_packets++;
         if (packet->get_tcp_flags().fin()) fin_packets++;
+
+        Timestamp zero_ts = Timestamp();
+        if (syn_ts == zero_ts && packet->get_tcp_flags().syn() && !packet->get_tcp_flags().ack())
+            syn_ts = packet->get_start_ts();
+        else if (syn_ack_ts == zero_ts && packet->get_tcp_flags().syn() && packet->get_tcp_flags().ack())
+            syn_ack_ts = packet->get_start_ts();
+        else if (ack_data_ts == zero_ts && !packet->get_tcp_flags().syn() && packet->get_tcp_flags().ack())
+            ack_data_ts = packet->get_start_ts();
 
         // Make state transitions according to packet
         update_state(packet);

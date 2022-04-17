@@ -723,6 +723,8 @@ namespace FeatureExtractor {
 
         // Packet counts
         //TODO: wrong_fragments
+        if (fragment->get_is_wrong_fragment())
+            wrong_fragments++;
         conn_packets++;
         if (packet->get_tcp_flags().cwr()) cwr_packets++;
         if (packet->get_tcp_flags().ece()) ece_packets++;

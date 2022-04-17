@@ -11,6 +11,7 @@ namespace FeatureExtractor {
         size_t ip_payload_length;
         uint8_t ip_ttl;
         uint16_t ip_checksum;
+        bool is_wrong_fragment;
 
     public:
         IpFragment();
@@ -40,6 +41,10 @@ namespace FeatureExtractor {
         void set_ip_checksum(uint16_t ip_checksum);
 
         uint16_t get_ip_checksum() const;
+
+        void set_is_wrong_fragment(bool is_wrong);
+
+        bool get_is_wrong_fragment() const;
 
         /**
          * Output the class values (e.g. for debuging purposes)

@@ -5,7 +5,7 @@ namespace FeatureExtractor {
     using namespace std;
 
     IpFragment::IpFragment()
-            : Packet(), ip_flag_mf(false), ip_frag_offset(0), ip_payload_length(0) {
+            : Packet(), ip_flag_mf(false), ip_frag_offset(0), ip_payload_length(0), is_wrong_fragment(false) {
     }
 
     IpFragment::~IpFragment() = default;
@@ -56,6 +56,14 @@ namespace FeatureExtractor {
 
     uint16_t IpFragment::get_ip_checksum() const {
         return ip_checksum;
+    }
+
+    void IpFragment::set_is_wrong_fragment(bool is_wrong) {
+        this->is_wrong_fragment = is_wrong;
+    }
+
+    bool IpFragment::get_is_wrong_fragment() const {
+        return this->is_wrong_fragment;
     }
 
     void IpFragment::print() const {

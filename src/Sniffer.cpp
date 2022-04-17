@@ -93,6 +93,19 @@ namespace FeatureExtractor {
         }
     }
 
+    bool is_wrong_fragment(ip_header_t* ip) {
+        uint16_t* header = (uint16_t*)ip;
+        size_t len = ip->header_length() / 2;
+        uint32_t sum = 0x0;
+        for (size_t i = 0; i < len; i++) {
+            sum += *header++;
+            sum = (sum >> 16) + (sum & 0xffff);
+            sum += (sum >> 16);
+        }
+        uint16_t short_sum = (uint16_t)~sum;
+        return short_sum != 0;
+    }
+
     IpFragment *Sniffer::next_frame() {
         struct pcap_pkthdr *header;
         const u_char *data;
@@ -129,6 +142,7 @@ namespace FeatureExtractor {
         f->set_ip_payload_length(ntohs(ip->total_length) - ip->header_length());
         f->set_ip_ttl(ip->ttl);
         f->set_ip_checksum(ip->checksum);
+        f->set_is_wrong_fragment(is_wrong_fragment(ip));
 
         // Look for L4 headers only in first fragment
         if (f->get_ip_frag_offset() > 0)

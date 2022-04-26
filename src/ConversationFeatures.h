@@ -136,6 +136,7 @@ namespace FeatureExtractor {
 
         void set_dst_host_same_srv_count(uint32_t same_srv_count);
 
+        void print_header(bool print_extra_features = true) const;
         /**
          * Print in KDD style + optionally extra features
          */

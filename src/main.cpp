@@ -84,6 +84,7 @@ void extract(Sniffer *sniffer, const Config *config, bool is_running_live) {
     StatsEngine stats_engine(config);
 
     bool has_more_traffic = true;
+    bool print_header = true;
     while (!temination_requested && (has_more_traffic || is_running_live)) {
 
         // Get frame from sniffer
@@ -120,6 +121,10 @@ void extract(Sniffer *sniffer, const Config *config, bool is_running_live) {
             ConversationFeatures *cf = stats_engine.calculate_features(conv);
             conv = nullptr;        // Should not be used anymore, object will commit suicide
 
+            if (print_header) {
+                print_header = false;
+                cf->print_header(config->should_print_extra_features());
+            }
             cf->print(config->should_print_extra_features());
             delete cf;
         }

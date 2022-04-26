@@ -24,8 +24,10 @@ namespace FeatureExtractor {
      */
     enum eth_field_type_t : uint16_t {
         TYPE_ZERO = 0,
-        MIN_ETH2 = 0x600,
-        IPV4 = 0x800
+        MIN_ETH2 = 0x0600,
+        IPV4 = 0x0800,
+        ARP = 0x0806,
+        IPV6 = 0x86DD,
     };
 
     /*
@@ -34,9 +36,10 @@ namespace FeatureExtractor {
     struct ether_header_t {
         uint8_t dst_addr[6];
         uint8_t src_addr[6];
+        uint8_t unused[2];
         eth_field_type_t type_length;
 
-        static const size_t ETH2_HEADER_LENGTH = 14;
+        static const size_t ETH2_HEADER_LENGTH = 16;
 
         bool is_ethernet2() const;
 
@@ -140,6 +143,9 @@ namespace FeatureExtractor {
         uint16_t urgent_p;
 
         static const size_t TCP_MIN_HEADER_LENGTH = 20;
+
+        size_t header_length() const;
+        uint8_t* get_sdu() const;
     };
 
 

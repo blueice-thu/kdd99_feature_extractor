@@ -190,6 +190,62 @@ namespace FeatureExtractor {
     // Allow using localtime instead of localtime_s
 #pragma warning(disable : 4996)
 
+    void ConversationFeatures::print_header(bool print_extra_features) const {
+        stringstream ss;
+
+        ss << "duration" << "," << "protocol" << "," << "service" << "," << "state" << ",";
+
+        ss << "src_packets" << "," << "src_packets_rate" << "," << "src_bytes_sum" << "," << "src_bytes_avg" << "," << "src_bytes_max" << "," << "src_bytes_min" << "," << "src_bytes_std" << "," << "src_bytes_rate" << ",";
+        ss << "dst_packets" << "," << "dst_packets_rate" << "," << "dst_bytes_sum" << "," << "dst_bytes_avg" << "," << "dst_bytes_max" << "," << "dst_bytes_min" << "," << "dst_bytes_std" << "," << "dst_bytes_rate" << ",";
+        ss << "conn_packets" << "," << "conn_packets_rate" << "," << "conn_bytes_sum" << "," << "conn_bytes_avg" << "," << "conn_bytes_max" << "," << "conn_bytes_min" << "," << "conn_bytes_std" << "," << "conn_bytes_rate" << ",";
+
+        ss << "src_gap_sum" << "," << "src_gap_avg" << "," << "src_gap_max" << "," << "src_gap_min" << "," << "src_gap_std" << ",";
+        ss << "dst_gap_sum" << "," << "dst_gap_avg" << "," << "dst_gap_max" << "," << "dst_gap_min" << "," << "dst_gap_std" << ",";
+        ss << "conn_gap_sum" << "," << "conn_gap_avg" << "," << "conn_gap_max" << "," << "conn_gap_min" << "," << "conn_gap_std" << ",";
+
+        ss << "syn_ack_gap" << "," << "get_ack_data_gap" << "," << "land" << "," << "get_wrong_fragments" << ",";
+
+        ss << "cwr_packets" << "," << "ece_packets" << "," << "urg_packets" << "," << "ack_packets" << "," << "psh_packets" << "," << "rst_packets" << "," << "syn_packets" << "," << "fin_packets" << ",";
+        ss << "src_cwr" << "," << "src_ece" << "," << "src_urg" << "," << "src_ack" << "," << "src_psh" << "," << "src_rst" << "," << "src_syn" << "," << "src_fin" << ",";
+        ss << "dst_cwr" << "," << "dst_ece" << "," << "dst_urg" << "," << "dst_ack" << "," << "dst_psh" << "," << "dst_rst" << "," << "dst_syn" << "," << "dst_fin" << ",";
+
+        ss << "src_init_window_bytes" << "," << "dst_init_window_bytes" << ",";
+        ss << "down_up_bytes_ratio" << "," << "down_up_packets_ratio" << ",";
+
+        ss << "src_ttl_avg" << "," << "src_ttl_max" << "," << "src_ttl_min" << "," << "src_ttl_std" << ",";
+        ss << "dst_ttl_avg" << "," << "dst_ttl_max" << "," << "dst_ttl_min" << "," << "dst_ttl_std" << ',';
+
+        ss << "count" << ',';
+        ss << "srv_count" << ',';
+        ss << "serror_rate" << ',';
+        ss << "srv_serror_rate" << ',';
+        ss << "rerror_rate" << ',';
+        ss << "srv_rerror_rate" << ',';
+        ss << "same_srv_rate" << ',';
+        ss << "diff_srv_rate" << ',';
+        ss << "get_srv_diff_host_rate" << ',';
+
+        ss << "dst_host_count" << ',';
+        ss << "dst_host_srv_count" << ',';
+        ss << "dst_host_same_srv_rate" << ',';
+        ss << "dst_host_diff_srv_rate" << ',';
+        ss << "dst_host_same_src_port_rate" << ',';
+        ss << "dst_host_srv_diff_host_rate" << ',';
+        ss << "dst_host_serror_rate" << ',';
+        ss << "dst_host_srv_serror_rate" << ',';
+        ss << "dst_host_rerror_rate" << ',';
+        ss << "dst_host_srv_rerror_rate";
+
+        if (print_extra_features) {
+            ss << ",";
+            ss << "src_ip" << "," << "src_port" << ",";
+            ss << "dst_ip" << "," << "dst_port" << ",";
+            ss << "time";
+        }
+
+        cout << ss.str() << endl;
+    }
+
     void ConversationFeatures::print(bool print_extra_features) const {
         stringstream ss;
 

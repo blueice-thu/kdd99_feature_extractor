@@ -63,6 +63,26 @@ namespace FeatureExtractor {
         return (((uint8_t *) this) + header_length());
     }
 
+    size_t tcp_header_t::header_length() const {
+        return (size_t)((data_offset >> 4) & (uint8_t)0x0f) * 4;
+    }
+
+    uint8_t *tcp_header_t::get_sdu() const {
+//        char *sdu = (char*)(((uint8_t *) this) + header_length());
+//        char *temp = sdu;
+//        char a1 = *temp++;
+//        char a2 = *temp++;
+//        char a3 = *temp++;
+//        char a4 = *temp++;
+//        if (a1 == 'H' && a2 == 'T') {
+//            for (size_t i = 0; i < 1280; i++) {
+//                printf("%c", *sdu++);
+//            }
+//            a2 = a3;
+//        }
+        return (((uint8_t *) this) + header_length());
+    }
+
     tcp_field_flags_t::tcp_field_flags_t(uint8_t flags)
             : flags(flags) {}
 

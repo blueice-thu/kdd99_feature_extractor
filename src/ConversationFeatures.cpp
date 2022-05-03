@@ -240,7 +240,7 @@ namespace FeatureExtractor {
             ss << ",";
             ss << "src_ip" << "," << "src_port" << ",";
             ss << "dst_ip" << "," << "dst_port" << ",";
-            ss << "time";
+            ss << "start_time" << "," << "end_time";
         }
 
         cout << ss.str() << endl;
@@ -388,16 +388,14 @@ namespace FeatureExtractor {
             ss << ft->get_dst_port() << ',';
 
             // Time (e.g.: 2010-06-14T00:11:23)
-            struct tm *ltime;
-            //struct tm timeinfo;
-            char timestr[20];
-            time_t local_tv_sec;
-            local_tv_sec = conv->get_last_ts().get_secs();
-            ltime = localtime(&local_tv_sec);
-            //localtime_s(&timeinfo, &local_tv_sec);
-            strftime(timestr, sizeof timestr, "%Y-%m-%dT%H:%M:%S", ltime);
-            //strftime(timestr, sizeof timestr, "%Y-%m-%dT%H:%M:%S", &timeinfo);
-            ss << timestr;
+//            struct tm *ltime;
+//            char timestr[20];
+//            time_t local_tv_sec;
+//            local_tv_sec = conv->get_last_ts().get_secs();
+//            ltime = localtime(&local_tv_sec);
+//            strftime(timestr, sizeof timestr, "%Y-%m-%dT%H:%M:%S", ltime);
+            ss << conv->get_start_ts().get_secs() << ",";
+            ss << conv->get_last_ts().get_secs();
         }
 
         cout << ss.str() << endl;

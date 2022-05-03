@@ -6,8 +6,8 @@ namespace FeatureExtractor {
     using namespace std;
 
     Packet::Packet()
-            : start_ts(), eth2(false), eth_type(TYPE_ZERO), five_tuple(), tcp_flags(), icmp_type(ECHOREPLY),
-              icmp_code(0), length(0), tcp_window_size(0) {
+            : start_ts(), eth2(false), eth_type(TYPE_ZERO), five_tuple(), tcp_flags(), tcp_window_size(0),
+              icmp_type(ECHOREPLY), icmp_code(0), length(0) {
     }
 
 

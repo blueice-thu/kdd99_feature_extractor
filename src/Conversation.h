@@ -181,7 +181,7 @@ namespace FeatureExtractor {
         int64_t conn_gap_ms_min;
         int64_t conn_gap_ms_squ;
 
-        uint32_t wrong_fragments;    // TODO: not implemented (IP checksum)
+        uint32_t wrong_fragments;
         uint32_t cwr_packets;
         uint32_t ece_packets;
         uint32_t urg_packets;
